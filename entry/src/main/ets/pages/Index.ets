@@ -116,7 +116,10 @@ struct Index {
 
     this.device.width = px2vp(device.width || 1260)
     this.device.height = px2vp(device.height || 2680)
-    this.video.itemWidth = 1 / Math.ceil(this.device.width / 320) * 100 + '%'
+
+    const len = Math.ceil(this.device.width / 260)
+    this.video.itemWidth = 1 / len * 100 + '%'
+    // this.log(this.device.width.toString())
   }
   aboutToAppear(): void {
     this.init()
@@ -212,7 +215,7 @@ struct Index {
               Flex({
                 wrap: FlexWrap.Wrap,
               }) {
-                if (this.logStr) Text(this.logStr);
+                if (this.logStr) Text(this.logStr).width('100%');
                 ForEach(this.video.list, (v: ResVideoRow) => {
                   RelativeContainer() {
                     Image(v.image).width('100%').height('100%').backgroundColor('#ddd')
@@ -231,8 +234,10 @@ struct Index {
             }
           }.width('100%').height('100%').layoutWeight(1).align(this.video.list.length > 0 ? Alignment.TopStart : Alignment.Center)
           Divider()
-          Row() {
-            Text(`${this.page.cur} / ${Math.ceil(this.page.total / this.page.size)}`)
+          Flex() {
+            Column() {
+              Text(`${this.page.cur} / ${Math.ceil(this.page.total / this.page.size)}`)
+            }.alignSelf(ItemAlign.Center)
             Row() {
               Select(this.page.pageSelectOptions).margin({ left: 10 })
                 .value(this.page.pageSelectOptions[0]?.value || '')
@@ -241,7 +246,10 @@ struct Index {
                   this.loadData()
                 })
             }.layoutWeight(1)
-            Text('个人练习 (田士贞)').fontSize(13).fontColor('#999')
+            Column() {
+              Text('个人练习 (摘星fy)').fontSize(13).fontColor('#999')
+              Text('QQ: 273259755').fontSize(13).fontColor('#999')
+            }.alignSelf(ItemAlign.Center)
           }.width('100%').backgroundColor('#fff').padding({
             top: 10,
             left: 15,
