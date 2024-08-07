@@ -1,4 +1,5 @@
 import { http } from '@kit.NetworkKit'
+// import http2 from '@ohos.net.http'
 import { display } from '@kit.ArkUI'
 
 import channel from './channel'
@@ -108,9 +109,6 @@ struct Index {
       this.video.isLoading = false
     })
   }
-  log(msg: string) {
-    this.logStr = msg
-  }
   init() {
     const device = display.getDefaultDisplaySync()
 
@@ -119,7 +117,6 @@ struct Index {
 
     const len = Math.ceil(this.device.width / 260)
     this.video.itemWidth = 1 / len * 100 + '%'
-    // this.log(this.device.width.toString())
   }
   aboutToAppear(): void {
     this.init()
