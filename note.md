@@ -1,3 +1,68 @@
+## 自适应布局 - 7种自适应布局
+
+```ts
+// 1. 拉伸
+Row() {
+  Row().width(150).flexGrow(0).flexShrink(1)
+  Image($r('app.media.illustrator')).width(400).flexGrow(1).flexShrink(0)
+  Row().width(150).flexGrow(0).flexShrink(1)
+}
+
+// 2. 均分
+Column() {
+  Row() {
+    ForEach(this.list, (item: number) => {
+      ...
+    }).width('100%').justifyContent(FlexAlign.SpaceEvenly)
+    Row() {...}
+  }
+}.width(this.rate * 100 + '%')
+
+// 3. 占比 layoutWeight   3等分
+Row() {
+  Column() {...}.layoutWidht(1)
+  Column() {...}.layoutWidht(1)
+  Column() {...}.layoutWidht(1)
+}
+
+// 4. 缩放
+Column() {
+  Column() {
+    Image($r('app.medai.illustrator')).width('100%').height('100%')
+  }.aspectRatio(1)
+}.width(this.sliderWidth).height(this.sliderHeight)
+
+// 5. 延伸
+Row({ space: 10 }) {
+  List({space: 10}) {...}.listDirection(Axis.Horizontal).width('100%')
+}.width(this.rate * 100 + '%')
+
+// 6. 隐藏 根据屏幕尺寸，隐藏元素
+Row() {
+  Image($r('app.media.favorite')).displayPriority(1)
+  Image($r('app.media.favorite')).displayPriority(2)
+  Image($r('app.media.favorite')).displayPriority(3)
+  Image($r('app.media.favorite')).displayPriority(2)
+  Image($r('app.media.favorite')).displayPriority(1)
+}
+
+// 7. 折行
+Column() {
+  Flex({
+    wrap: FlexWrap.Wrap,
+    direction: FlexDirection.Row
+  }) {
+    ForEach(this.imgList, v: Resource => {
+      Image(item).width('200').height('200')
+    })
+  }.width('100%')
+}
+```
+
+## 响应式布局 - 断点、媒体查询、栅格
+
+
+
 - 鸿蒙SDK
 - C:\Program Files\Huawei\DevEco Studio\sdk\HarmonyOS-NEXT-DB2\openharmony\ets\kits
 

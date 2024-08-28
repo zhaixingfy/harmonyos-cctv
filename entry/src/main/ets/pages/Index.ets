@@ -136,17 +136,17 @@ struct Index {
       Row() {
         Text('CCTV - 鸿蒙客户端').fontColor('#fff').fontWeight(FontWeight.Bold).layoutWeight(1)
         Text('数据源：央视网').fontColor('#aaa').fontSize(13)
-        if (this.video.m3u8) {
-          Text('关闭').fontColor('#aaa')
-          .fontSize(13).margin({left: 12}).backgroundColor('#c30').fontColor('#fff').padding({
-            left: 8,
-            right: 8,
-            top: 2,
-            bottom: 2,
-          }).borderRadius(4).onClick(() => {
-            this.video.m3u8 = ''
-          })
-        }
+        // if (this.video.m3u8) {
+        //   Text('关闭').fontColor('#aaa')
+        //   .fontSize(13).margin({left: 12}).backgroundColor('#c30').fontColor('#fff').padding({
+        //     left: 8,
+        //     right: 8,
+        //     top: 2,
+        //     bottom: 2,
+        //   }).borderRadius(4).onClick(() => {
+        //     this.video.m3u8 = ''
+        //   })
+        // }
       }.width('100%').backgroundColor('#36393f').padding({
         left: 15,
         right: 15,
@@ -169,6 +169,8 @@ struct Index {
                   .fontSize(14)
                   .fontColor(idx === this.d.idxChannel ? '#09f' : '#000')
                   .onClick(() => {
+                    this.video.m3u8 = ''
+                    if (this.d.idxChannel === idx && this.d.idxAlbum === 0) return;
                     this.d.idxChannel = idx
                     this.d.idxAlbum = 0
                     this.page.cur = 1
@@ -193,6 +195,8 @@ struct Index {
                   .fontSize(14)
                   .fontColor(idx === this.d.idxAlbum ? '#09f' : '#000')
                   .onClick(() => {
+                    this.video.m3u8 = ''
+                    if (this.d.idxAlbum === idx) return;
                     this.d.idxAlbum = idx
                     this.page.cur = 1
                     this.loadData()
@@ -205,31 +209,43 @@ struct Index {
           }.scrollable(ScrollDirection.Horizontal)
           Divider()
 
-          Scroll() {
-            if (!this.video.list.length) {
-              Text(this.video.isLoading ? '数据加载中...' : '暂无数据')
-            } else {
-              Flex({
-                wrap: FlexWrap.Wrap,
-              }) {
-                if (this.logStr) Text(this.logStr).width('100%');
-                ForEach(this.video.list, (v: ResVideoRow) => {
-                  RelativeContainer() {
-                    Image(v.image).width('100%').height('100%').backgroundColor('#ddd')
-                    Text(v.title).width('100%').fontSize(12).position({
-                      left: 0,
-                      bottom: 0,
-                    }).backgroundColor('#000').fontColor('#fff').textOverflow({
-                      overflow: TextOverflow.Ellipsis
-                    }).maxLines(2).padding(5).opacity(.6)
-                  }.width(this.video.itemWidth).aspectRatio(1.5).padding(5).onClick(() => {
-                    console.log('v.guid is', v.guid)
-                    this.loadM3u8(v)
+          RelativeContainer() {
+            Scroll() {
+              if (!this.video.list.length) {
+                Text(this.video.isLoading ? '数据加载中...' : '暂无数据')
+              } else {
+                Flex({ wrap: FlexWrap.Wrap }) {
+                  if (this.logStr) Text(this.logStr).width('100%');
+                  ForEach(this.video.list, (v: ResVideoRow) => {
+                    RelativeContainer() {
+                      Image(v.image).width('100%').height('100%').backgroundColor('#ddd')
+                      Text(v.title).width('100%').fontSize(12).position({
+                        left: 0,
+                        bottom: 0,
+                      }).backgroundColor('#000').fontColor('#fff').textOverflow({
+                        overflow: TextOverflow.Ellipsis
+                      }).maxLines(2).padding(5).opacity(.75)
+                    }.width(this.video.itemWidth).aspectRatio(1.5).padding(5).onClick(() => {
+                      console.log('v.guid is', v.guid)
+                      this.loadM3u8(v)
+                    })
                   })
-                })
-              }.padding(10).width('100%')
+                }.padding(10).width('100%')
+              }
+            }.width('100%').height('100%').align(this.video.list.length > 0 ? Alignment.TopStart : Alignment.Center)
+
+            if (this.video.m3u8) {
+              Video({
+                src: this.video.m3u8,
+                currentProgressRate: 1,
+                controller: this.controller,
+              }).width('100%').height('100%').position({
+                left: 0,
+                top: 0,
+              }).objectFit(ImageFit.Contain).autoPlay(true)
             }
-          }.width('100%').height('100%').layoutWeight(1).align(this.video.list.length > 0 ? Alignment.TopStart : Alignment.Center)
+          }.width('100%').layoutWeight(1)
+
           Divider()
           Flex() {
             Column() {
@@ -254,13 +270,6 @@ struct Index {
           })
         }.width('100%').height('100%')
 
-        if (this.video.m3u8) {
-          Video({
-            src: this.video.m3u8,
-            currentProgressRate: 1,
-            controller: this.controller,
-          }).width('100%').height('100%').objectFit(ImageFit.Contain).autoPlay(true)
-        }
       }.layoutWeight(1)
     }.width('100%').height('100%')
   }
